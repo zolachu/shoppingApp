@@ -1,21 +1,36 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  Image,
+  SafeAreaView,
+  View,
+  Alert,
+  Button,
+  Platform,
+} from "react-native";
+import {
+  useDimensions,
+  useDeviceOrientation,
+} from "@react-native-community/hooks";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>zola app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Image source={require("./assets/background.jpg")} />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blue",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#fff",
+    width: "100%",
+    height: "100%",
   },
 });
