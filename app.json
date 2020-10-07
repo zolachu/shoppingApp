@@ -21,6 +21,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Sell and buy merchandise online!",
+    "githubUrl": "https://github.com/zolachu/shoppingApp"
   }
 }
