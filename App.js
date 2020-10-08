@@ -12,16 +12,26 @@ import {
   Alert,
   Button,
   Platform,
+  FlatList,
 } from "react-native";
 import {
   useDimensions,
   useDeviceOrientation,
 } from "@react-native-community/hooks";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Image source={require("./assets/background.png")} />
+      <Header>Shopping Cart</Header>
+      <View>
+        <FlatList
+          data={DATA}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
     </SafeAreaView>
   );
 }
