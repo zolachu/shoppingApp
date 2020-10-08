@@ -20,6 +20,7 @@ import {
 } from "@react-native-community/hooks";
 import { Header } from "react-native/Libraries/NewAppScreen";
 
+const DATA = {};
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
