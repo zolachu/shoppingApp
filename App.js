@@ -21,7 +21,7 @@ import {
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={require("./assets/background.jpg")} />
+      <Image source={require("./assets/background.png")} />
     </SafeAreaView>
   );
 }
