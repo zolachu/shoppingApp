@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "@react-native-community/hooks": "^2.6.0",
+    "cli": "^1.0.1",
     "expo": "~39.0.2",
     "expo-status-bar": "~1.0.2",
+    "node": "^14.13.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.3.tar.gz",
