@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component, useEffect, useState } from "react";
 import * as Location from "expo-location";
-
+import WeatherInfo from "./components/WeatherInfo";
 import {
   StyleSheet,
   Text,
@@ -15,6 +15,7 @@ import {
 } from "react-native";
 
 const WEATHER_API_KEY = "e4226edb81f8dc101efa2256aac4af19";
+const FAKE_API = "4991daf33e84a95c2a155406681ccfcc";
 const BASE_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?";
 
 export default function App() {
@@ -60,43 +61,66 @@ export default function App() {
         alert("currentWeather: " + currentWeather);
       } else {
         setErrorMessage(result.message);
+        console.log("couldnt extract current weather");
       }
     } catch (error) {
       setErrorMessage(error.message);
+      console.log("couldn't connect to the url");
     }
   }
 
-  // if (currentWeather) {
-  //   const {
-  //     main: { temp },
-  //   } = currentWeather;
-  return (
-    // {temp}
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <View style={styles.main}>
-        <Text>133</Text>
+  const temp = 100;
+  const name = "Ulaanbaatar";
+  const description = "light rain";
+  const main = "Rain";
+  // const currentWeatherFake = {
+  //   main: temp,
+  // weather:   };
+  // console.log(currentWeatherFake);
+  if (true) {
+    // const {
+    //   main: { temp },
+    //   weather: [details],
+    // name
+    // } = currentWeather;
+    // const { icon, main, description } = details;
+    // const iconUrl = "https://openweathermap.org/img/win/${icon}@4x";
+    return (
+      <View style={styles.weatherInfo}>
+        {/* <Image style={styles.weatherIcon} source={{ uri: iconUrl }} /> */}
+        <View style={styles.main}>
+          <Text>{name}</Text>
+          <WeatherInfo temp={temp} />
+        </View>
+        <Text style={styles.weatherDescription}>{description}</Text>
+        <Text>{main}</Text>
       </View>
-    </View>
-  );
+    );
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>{errorMessage}</Text>
+        <StatusBar style="auto" />
+      </View>
+    );
+  }
 }
-//  else {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.text}>{errorMessage}</Text>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
-// }
 
 const styles = StyleSheet.create({
-  container: {
+  weatherInfo: {
     flex: 1,
     justifyContent: "center",
+    textAlign: "center",
   },
   main: {
     justifyContent: "center",
     flex: 1,
+  },
+  weatherIcon: {
+    width: 100,
+    height: 100,
+  },
+  weatherDescription: {
+    textTransform: "capitalize",
   },
 });
