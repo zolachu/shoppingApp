@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Picker } from "@react-native-community/picker";
 
@@ -17,7 +17,7 @@ export default function weatherPicker({ unitsSystem, setUnitsSystem }) {
 
 const styles = StyleSheet.create({
   picker: {
-    height: 200,
+    // height: 200,
     width: 100,
   },
 });

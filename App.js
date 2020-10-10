@@ -6,7 +6,8 @@ import { Picker } from "@react-native-community/picker";
 import { Icon as WeatherIcon, InlineIcon } from "@iconify/react";
 import dayCloudyGusts from "@iconify/icons-wi/day-cloudy-gusts";
 import WeatherPicker from "./components/WeatherPicker";
-// import { TabView, TabBar } from "react-native-tab-view";
+import DisplayWeather from "./components/DisplayWeather";
+import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 
 import {
   StyleSheet,
@@ -20,6 +21,7 @@ import {
   TextInput,
 } from "react-native";
 import Icon from "@mdi/react";
+import { mdiCardAccountDetailsOutline } from "@mdi/js";
 
 const WEATHER_API_KEY = "e4226edb81f8dc101efa2256aac4af19";
 const FAKE = "840832dc8968382e5af61395ac8b54a1";
@@ -75,14 +77,74 @@ export default function App() {
       console.log("couldn't connect to the url");
     }
   }
-  // return (
-  //   <View style={styles.container}>
-  //     <Text style={styles.text}>{errorMessage}</Text>
-  //     <StatusBar style="auto" />
-  //   </View>
-  // );
-  // /*
-  if (true) {
+
+  const FirstRoute = ({
+    iconUrl,
+    name,
+    temp,
+    description,
+    main,
+    humidity,
+    feels_like,
+    pressure,
+    speed,
+  }) => (
+    <ImageBackground
+      source={require("./assets/background.png")}
+      style={styles.background}
+    >
+      <View style={styles.displayWeather}>
+        <WeatherPicker
+          unitsSystem={unitsSystem}
+          setUnitsSystem={setUnitsSystem}
+        />
+
+        <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
+        <Text style={{ fontSize: 30 }}>{name}</Text>
+        <WeatherInfo temp={temp} />
+        <Text style={styles.weatherDescription}>{description}</Text>
+        <Text style={styles.main}>{main}</Text>
+      </View>
+
+      <View style={styles.descriptions}>
+        <View style={styles.boxes}>
+          <View style={styles.table}>
+            <Text style={styles.textDescriptions}>Humidity:</Text>
+            <Text style={styles.box}>{humidity}%</Text>
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.textDescriptions}>Feels like:</Text>
+            <Text style={styles.box}>{feels_like}°</Text>
+          </View>
+        </View>
+
+        <View style={styles.boxes}>
+          <View style={styles.table}>
+            <Text style={styles.textDescriptions}>Pressure:</Text>
+            <Text style={styles.box}>{pressure} hPa</Text>
+          </View>
+          <View style={styles.table}>
+            <Text style={styles.textDescriptions}>Wind Speed</Text>
+            <Text style={styles.box}>{speed} m/s</Text>
+          </View>
+        </View>
+      </View>
+    </ImageBackground>
+  );
+
+  const SecondRoute = () => (
+    <View style={[styles.scene, { backgroundColor: "#673ab7" }]} />
+  );
+
+  const initialLayout = { width: Dimensions.get("window").width };
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: "first", title: "First" },
+    { key: "second", title: "Second" },
+  ]);
+
+  if (currentWeather) {
     const {
       main: { temp, feels_like, pressure, humidity },
       weather: [details],
@@ -92,49 +154,67 @@ export default function App() {
     const { icon, main, description } = details;
     const iconUrl = "http://openweathermap.org/img/wn/" + icon + "@4x.png";
 
-    return (
-      <View style={styles.weatherInfo}>
-        <ImageBackground
-          source={require("./assets/background.png")}
-          style={styles.background}
-        >
-          <View style={styles.displayWeather}>
-            <WeatherPicker
+    const renderScene = ({
+      route,
+      iconUrl,
+      name,
+      temp,
+      description,
+      main,
+      humidity,
+      feels_like,
+      pressure,
+      speed,
+      unitsSystem,
+      setUnitsSystem,
+      WeatherInfo,
+    }) => {
+      switch (route.key) {
+        case "first":
+          return (
+            <DisplayWeather
+              iconUrl={iconUrl}
+              name={name}
+              temp={temp}
+              description={description}
+              main={main}
+              humidity={humidity}
+              feels_like={feels_like}
+              pressure={pressure}
+              speed={speed}
               unitsSystem={unitsSystem}
               setUnitsSystem={setUnitsSystem}
+              WeatherInfo={WeatherInfo}
             />
+          );
+        case "second":
+          return SecondRoute;
+      }
+    };
 
-            <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
-            <Text style={{ fontSize: 30 }}>{name}</Text>
-            <WeatherInfo temp={temp} />
-            <Text style={styles.weatherDescription}>{description}</Text>
-            <Text style={styles.main}>{main}</Text>
-          </View>
+    return (
+      <View style={styles.weatherInfo}>
+        {/* <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
+        /> */}
 
-          <View style={styles.descriptions}>
-            <View style={styles.boxes}>
-              <View style={styles.table}>
-                <Text style={styles.textDescriptions}>Humidity:</Text>
-                <Text style={styles.box}>{humidity}%</Text>
-              </View>
-              <View style={styles.table}>
-                <Text style={styles.textDescriptions}>Feels like:</Text>
-                <Text style={styles.box}>{feels_like}°</Text>
-              </View>
-            </View>
-
-            <View style={styles.boxes}>
-              <View style={styles.table}>
-                <Text style={styles.textDescriptions}>Pressure:</Text>
-                <Text style={styles.box}>{pressure} hPa</Text>
-              </View>
-              <View style={styles.table}>
-                <Text style={styles.textDescriptions}>Wind Speed</Text>
-                <Text style={styles.box}>{speed} m/s</Text>
-              </View>
-            </View>
-          </View>
-        </ImageBackground>
+        <DisplayWeather
+          iconUrl={iconUrl}
+          name={name}
+          temp={temp}
+          description={description}
+          main={main}
+          humidity={humidity}
+          feels_like={feels_like}
+          pressure={pressure}
+          speed={speed}
+          unitsSystem={unitsSystem}
+          setUnitsSystem={setUnitsSystem}
+          WeatherInfo={WeatherInfo}
+        />
       </View>
     );
   } else {
@@ -155,52 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
   },
-  background: {
+  scene: {
     flex: 1,
-    flexDirection: "column",
-  },
-  displayWeather: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 4,
-  },
-  main: {
-    fontSize: 25,
-    fontWeight: "bold",
-  },
-  weatherIcon: {
-    width: 100,
-    height: 100,
-  },
-  weatherDescription: {
-    textTransform: "capitalize",
-  },
-  box: {
-    fontSize: 20,
-    textAlign: "left",
-    fontWeight: "bold",
-  },
-
-  boxes: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "stretch",
-    marginLeft: 30,
-  },
-  table: {
-    width: 100,
-    alignSelf: "stretch",
-    borderColor: "#fff",
-    width: Dimensions.get("screen").width / 2,
-  },
-  textDescriptions: {
-    textAlign: "left",
-    fontSize: 15,
-  },
-  descriptions: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-end",
-    alignItems: "stretch",
   },
 });
