@@ -80,7 +80,7 @@ export default function App() {
   //     <StatusBar style="auto" />
   //   </View>
   // );
-
+  // /*
   if (true) {
     const {
       main: { temp, feels_like, pressure, humidity },
@@ -111,40 +111,32 @@ export default function App() {
             </Picker>
           </View>
           <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
-          <Text>{name}</Text>
+          <Text style={{ fontSize: 30 }}>{name}</Text>
           <WeatherInfo temp={temp} />
           <Text style={styles.weatherDescription}>{description}</Text>
           <Text style={styles.main}>{main}</Text>
         </View>
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            alignItems: "stretch",
-          }}
-        >
+        <View style={styles.descriptions}>
           <View style={styles.boxes}>
             <View style={styles.table}>
-              <Text style={styles.descriptions}>Humidity:</Text>
-              <Text style={styles.box}>{humidity}</Text>
+              <Text style={styles.textDescriptions}>Humidity:</Text>
+              <Text style={styles.box}>{humidity}%</Text>
             </View>
             <View style={styles.table}>
-              <Text style={styles.descriptions}>Feels like:</Text>
-              <Text style={styles.box}>{feels_like}</Text>
+              <Text style={styles.textDescriptions}>Feels like:</Text>
+              <Text style={styles.box}>{feels_like}°</Text>
             </View>
           </View>
 
           <View style={styles.boxes}>
             <View style={styles.table}>
-              <WeatherIcon icon={dayCloudyGusts} />
-              <Text style={styles.descriptions}>Pressure:</Text>
-              <Text style={styles.box}>{pressure}</Text>
+              <Text style={styles.textDescriptions}>Pressure:</Text>
+              <Text style={styles.box}>{pressure} hPa</Text>
             </View>
             <View style={styles.table}>
-              <Text style={styles.descriptions}>Wind Speed</Text>
-              <Text style={styles.box}>{speed}</Text>
+              <Text style={styles.textDescriptions}>Wind Speed</Text>
+              <Text style={styles.box}>{speed} m/s</Text>
             </View>
           </View>
         </View>
@@ -158,6 +150,7 @@ export default function App() {
       </View>
     );
   }
+  // */
 }
 
 const styles = StyleSheet.create({
@@ -184,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   picker: {
-    height: 50,
+    height: 80,
     width: 100,
   },
   boxes: {
@@ -193,14 +186,19 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
   },
   table: {
-    borderWidth: 1,
     width: 100,
     alignSelf: "stretch",
-    borderColor: "#ddd",
+    borderColor: "#fff",
     width: Dimensions.get("screen").width / 2,
   },
-  descriptions: {
+  textDescriptions: {
     textAlign: "left",
     fontSize: 15,
+  },
+  descriptions: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "stretch",
   },
 });
