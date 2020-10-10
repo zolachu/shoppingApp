@@ -5,11 +5,12 @@ import WeatherInfo from "./components/WeatherInfo";
 import { Picker } from "@react-native-community/picker";
 import { Icon as WeatherIcon, InlineIcon } from "@iconify/react";
 import dayCloudyGusts from "@iconify/icons-wi/day-cloudy-gusts";
+import WeatherPicker from "./components/WeatherPicker";
+// import { TabView, TabBar } from "react-native-tab-view";
 
 import {
   StyleSheet,
   Text,
-  TouchableHighlight,
   Image,
   View,
   Alert,
@@ -93,53 +94,47 @@ export default function App() {
 
     return (
       <View style={styles.weatherInfo}>
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            flex: 4,
-          }}
+        <ImageBackground
+          source={require("./assets/background.png")}
+          style={styles.background}
         >
-          <View>
-            <Picker
-              style={styles.picker}
-              selectedValue={unitsSystem}
-              onValueChange={(item) => setUnitsSystem(item)}
-            >
-              <Picker.Item label="C°" value="metric" />
-              <Picker.Item label="F°" value="imperial" />
-            </Picker>
-          </View>
-          <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
-          <Text style={{ fontSize: 30 }}>{name}</Text>
-          <WeatherInfo temp={temp} />
-          <Text style={styles.weatherDescription}>{description}</Text>
-          <Text style={styles.main}>{main}</Text>
-        </View>
+          <View style={styles.displayWeather}>
+            <WeatherPicker
+              unitsSystem={unitsSystem}
+              setUnitsSystem={setUnitsSystem}
+            />
 
-        <View style={styles.descriptions}>
-          <View style={styles.boxes}>
-            <View style={styles.table}>
-              <Text style={styles.textDescriptions}>Humidity:</Text>
-              <Text style={styles.box}>{humidity}%</Text>
-            </View>
-            <View style={styles.table}>
-              <Text style={styles.textDescriptions}>Feels like:</Text>
-              <Text style={styles.box}>{feels_like}°</Text>
-            </View>
+            <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
+            <Text style={{ fontSize: 30 }}>{name}</Text>
+            <WeatherInfo temp={temp} />
+            <Text style={styles.weatherDescription}>{description}</Text>
+            <Text style={styles.main}>{main}</Text>
           </View>
 
-          <View style={styles.boxes}>
-            <View style={styles.table}>
-              <Text style={styles.textDescriptions}>Pressure:</Text>
-              <Text style={styles.box}>{pressure} hPa</Text>
+          <View style={styles.descriptions}>
+            <View style={styles.boxes}>
+              <View style={styles.table}>
+                <Text style={styles.textDescriptions}>Humidity:</Text>
+                <Text style={styles.box}>{humidity}%</Text>
+              </View>
+              <View style={styles.table}>
+                <Text style={styles.textDescriptions}>Feels like:</Text>
+                <Text style={styles.box}>{feels_like}°</Text>
+              </View>
             </View>
-            <View style={styles.table}>
-              <Text style={styles.textDescriptions}>Wind Speed</Text>
-              <Text style={styles.box}>{speed} m/s</Text>
+
+            <View style={styles.boxes}>
+              <View style={styles.table}>
+                <Text style={styles.textDescriptions}>Pressure:</Text>
+                <Text style={styles.box}>{pressure} hPa</Text>
+              </View>
+              <View style={styles.table}>
+                <Text style={styles.textDescriptions}>Wind Speed</Text>
+                <Text style={styles.box}>{speed} m/s</Text>
+              </View>
             </View>
           </View>
-        </View>
+        </ImageBackground>
       </View>
     );
   } else {
@@ -160,6 +155,15 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
   },
+  background: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  displayWeather: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 4,
+  },
   main: {
     fontSize: 25,
     fontWeight: "bold",
@@ -176,14 +180,12 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontWeight: "bold",
   },
-  picker: {
-    height: 80,
-    width: 100,
-  },
+
   boxes: {
     flex: 1,
     flexDirection: "row",
     alignItems: "stretch",
+    marginLeft: 30,
   },
   table: {
     width: 100,
