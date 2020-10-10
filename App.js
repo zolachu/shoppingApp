@@ -2,6 +2,10 @@ import { StatusBar } from "expo-status-bar";
 import React, { Component, useEffect, useState } from "react";
 import * as Location from "expo-location";
 import WeatherInfo from "./components/WeatherInfo";
+import { Picker } from "@react-native-community/picker";
+import { Icon as WeatherIcon, InlineIcon } from "@iconify/react";
+import dayCloudyGusts from "@iconify/icons-wi/day-cloudy-gusts";
+
 import {
   StyleSheet,
   Text,
@@ -11,12 +15,14 @@ import {
   Alert,
   Button,
   ImageBackground,
+  Dimensions,
   TextInput,
 } from "react-native";
+import Icon from "@mdi/react";
 
 const WEATHER_API_KEY = "e4226edb81f8dc101efa2256aac4af19";
-const FAKE_API = "4991daf33e84a95c2a155406681ccfcc";
-const BASE_WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?";
+const FAKE = "840832dc8968382e5af61395ac8b54a1";
+const BASE_WEATHER_URL = "http://api.openweathermap.org/data/2.5/weather?";
 
 export default function App() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -26,7 +32,7 @@ export default function App() {
 
   useEffect(() => {
     load();
-  }, []);
+  }, [unitsSystem]);
 
   async function load() {
     try {
@@ -39,26 +45,26 @@ export default function App() {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-
-      // const latitude = location.latitude;
-      // const longitude = location.longitude;
-
-      const latitude = 37.0;
-      const longitude = -122.0;
-      //      const { latitude, longitude } = {location.coords};
-      console.log("latitude : " + latitude + ", longitude : " + longitude);
+      const longitude = location.coords["longitude"];
+      const latitude = location.coords["latitude"];
 
       const weather_url =
-        "${BASE_WEATHER_URL}lat=${latitude}&lon=${longitude}&units=${unitsSystem}&appid=${WEATHER_API_KEY}";
+        "http://api.openweathermap.org/data/2.5/weather?" +
+        "lat=" +
+        latitude +
+        "&lon=" +
+        longitude +
+        "&units=" +
+        unitsSystem +
+        "&appid=" +
+        FAKE;
 
       const response = await fetch(weather_url);
-
       const result = await response.json();
 
       if (response.ok) {
+        console.log("ok");
         setCurrentWeather(result);
-        console.log("current weather");
-        alert("currentWeather: " + currentWeather);
       } else {
         setErrorMessage(result.message);
         console.log("couldnt extract current weather");
@@ -68,37 +74,85 @@ export default function App() {
       console.log("couldn't connect to the url");
     }
   }
+  // return (
+  //   <View style={styles.container}>
+  //     <Text style={styles.text}>{errorMessage}</Text>
+  //     <StatusBar style="auto" />
+  //   </View>
+  // );
 
-  const temp = 100;
-  const name = "Ulaanbaatar";
-  const description = "light rain";
-  const main = "Rain";
-  // const currentWeatherFake = {
-  //   main: temp,
-  // weather:   };
-  // console.log(currentWeatherFake);
   if (true) {
-    // const {
-    //   main: { temp },
-    //   weather: [details],
-    // name
-    // } = currentWeather;
-    // const { icon, main, description } = details;
-    // const iconUrl = "https://openweathermap.org/img/win/${icon}@4x";
+    const {
+      main: { temp, feels_like, pressure, humidity },
+      weather: [details],
+      name,
+      wind: { speed },
+    } = currentWeather;
+    const { icon, main, description } = details;
+    const iconUrl = "http://openweathermap.org/img/wn/" + icon + "@4x.png";
+
     return (
       <View style={styles.weatherInfo}>
-        {/* <Image style={styles.weatherIcon} source={{ uri: iconUrl }} /> */}
-        <View style={styles.main}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 4,
+          }}
+        >
+          <View>
+            <Picker
+              style={styles.picker}
+              selectedValue={unitsSystem}
+              onValueChange={(item) => setUnitsSystem(item)}
+            >
+              <Picker.Item label="C°" value="metric" />
+              <Picker.Item label="F°" value="imperial" />
+            </Picker>
+          </View>
+          <Image style={styles.weatherIcon} source={{ uri: iconUrl }} />
           <Text>{name}</Text>
           <WeatherInfo temp={temp} />
+          <Text style={styles.weatherDescription}>{description}</Text>
+          <Text style={styles.main}>{main}</Text>
         </View>
-        <Text style={styles.weatherDescription}>{description}</Text>
-        <Text>{main}</Text>
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            alignItems: "stretch",
+          }}
+        >
+          <View style={styles.boxes}>
+            <View style={styles.table}>
+              <Text style={styles.descriptions}>Humidity:</Text>
+              <Text style={styles.box}>{humidity}</Text>
+            </View>
+            <View style={styles.table}>
+              <Text style={styles.descriptions}>Feels like:</Text>
+              <Text style={styles.box}>{feels_like}</Text>
+            </View>
+          </View>
+
+          <View style={styles.boxes}>
+            <View style={styles.table}>
+              <WeatherIcon icon={dayCloudyGusts} />
+              <Text style={styles.descriptions}>Pressure:</Text>
+              <Text style={styles.box}>{pressure}</Text>
+            </View>
+            <View style={styles.table}>
+              <Text style={styles.descriptions}>Wind Speed</Text>
+              <Text style={styles.box}>{speed}</Text>
+            </View>
+          </View>
+        </View>
       </View>
     );
   } else {
     return (
-      <View style={styles.container}>
+      <View style={styles.weatherInfo}>
         <Text style={styles.text}>{errorMessage}</Text>
         <StatusBar style="auto" />
       </View>
@@ -108,13 +162,14 @@ export default function App() {
 
 const styles = StyleSheet.create({
   weatherInfo: {
+    alignItems: "center",
     flex: 1,
+    flexDirection: "column",
     justifyContent: "center",
-    textAlign: "center",
   },
   main: {
-    justifyContent: "center",
-    flex: 1,
+    fontSize: 25,
+    fontWeight: "bold",
   },
   weatherIcon: {
     width: 100,
@@ -122,5 +177,30 @@ const styles = StyleSheet.create({
   },
   weatherDescription: {
     textTransform: "capitalize",
+  },
+  box: {
+    fontSize: 20,
+    textAlign: "left",
+    fontWeight: "bold",
+  },
+  picker: {
+    height: 50,
+    width: 100,
+  },
+  boxes: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "stretch",
+  },
+  table: {
+    borderWidth: 1,
+    width: 100,
+    alignSelf: "stretch",
+    borderColor: "#ddd",
+    width: Dimensions.get("screen").width / 2,
+  },
+  descriptions: {
+    textAlign: "left",
+    fontSize: 15,
   },
 });
